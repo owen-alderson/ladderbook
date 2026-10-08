@@ -13,7 +13,16 @@ Kalshi lists "Will BTC be above $X at 3pm?" for about 20 strikes every hour, and
   - Kalshi's 60-second-average settlement modelled exactly, including the prints already locked in during the final minute;
   - checked against closed-form Black-Scholes and Monte Carlo.
 - **Coherence.** Pairwise Frank-Wolfe finds the closest set of prices that can't contradict each other across an hour's strikes.
-- **C++ core.** Exact fixed-point units, a binary order book (a NO bid at 95¢ is a YES offer at 5¢), and Kalshi's fee and rounding model, which matches the documented examples to the micro-dollar.
+- **C++ core.**
+  - Exact fixed-point units.
+  - A binary order book (a NO bid at 95¢ is a YES offer at 5¢).
+  - Kalshi's fee and rounding model, which matches the documented examples to the micro-dollar.
+- **Simulated exchange (C++).** Replays the recorded tape against hypothetical orders:
+  - order and cancel latency;
+  - queue position: you fill only after the size ahead of you trades;
+  - trade-throughs;
+  - trades netted against their own book decrements, so one fill is never also counted as a cancel;
+  - three cancel assumptions (conservative, proportional, optimistic), so every result can be reported as a range rather than a single flattering number.
 
 ## Today's ladder (no API key needed)
 
