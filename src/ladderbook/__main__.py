@@ -22,6 +22,9 @@ def main(argv: list[str] | None = None) -> None:
     ver = commands.add_parser("verify", help="rebuild every recorded book and check it against Kalshi's snapshots")
     ver.add_argument("--data", type=Path, default=Path("data"))
 
+    fair = commands.add_parser("fair", help="the next hour's ladder: Kalshi quotes vs options-implied fair value")
+    fair.add_argument("--series", default="KXBTCD", choices=["KXBTCD", "KXETHD"])
+
     args = parser.parse_args(argv)
     if args.command == "record":
         from ladderbook.record.recorder import record
@@ -37,6 +40,10 @@ def main(argv: list[str] | None = None) -> None:
         report = verify(args.data)
         print(report.summary())
         raise SystemExit(0 if report.ok else 1)
+    elif args.command == "fair":
+        from ladderbook.fair.live import main as fair_main
+
+        fair_main(args.series)
     else:
         parser.print_help()
 
