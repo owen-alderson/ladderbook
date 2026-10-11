@@ -65,7 +65,7 @@ def longshot(results: dict, path: Path) -> None:
         _whiskers(ax, xs, [r[key][0] * 100 for r in rows], [r[key][1] * 100 for r in rows], [r[key][2] * 100 for r in rows], color, marker, label)
     ax.set_xticks(range(len(rows)), [r["bucket"] for r in rows], color=MUTED, fontsize=8)
     ax.set_xlabel("price paid for the contract (YES at the ask or NO at 1 − bid)", color=MUTED)
-    ax.legend(frameon=False, labelcolor=INK, loc="best")
+    ax.legend(frameon=False, labelcolor=INK, loc="lower right")
     fig.tight_layout()
     fig.savefig(path, facecolor=SURFACE)
     plt.close(fig)

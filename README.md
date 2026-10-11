@@ -6,6 +6,8 @@ Kalshi lists "Will BTC be above $X at 3pm?" for about 20 strikes every hour, and
 
 **Status: early development.** Built so far:
 
+- **Study A.** Calibration and favourite-longshot bias of 59 days of settled ladders vs options (see below).
+
 - **Recorder.** Streams every open BTC/ETH hourly market's order book, trades and the settlement index (CF Benchmarks BRTI) from Kalshi, plus Deribit's options surface. Messages are stored verbatim in Parquet. Sequence gaps are detected, marked and resynced, never guessed.
 - **Verifier.** Rebuilds every book from its deltas and checks it level-for-level against each snapshot Kalshi sends.
 - **Fair value.** P(BTC settles above K) from Deribit's options:
@@ -45,6 +47,20 @@ Kalshi implies       81,849.04      21.3%   fitted to the mids above
 ```
 
 In this snapshot Kalshi priced the next 35 minutes at a much lower volatility than Deribit's options. Whether that is a risk premium, a time-of-day effect or an edge is the question this project answers with data, not by eye.
+
+## Study A: what 59 days of settled ladders say (no API key needed)
+
+```bash
+pip install "ladderbook[research]"
+ladderbook study-a --start 2026-08-13 --end 2026-10-11
+```
+
+Over 1,377 settled hours:
+- **Kalshi's mid out-forecast a Deribit-options model at every horizon** (Brier 0.091 vs 0.098, bootstrapped by settlement hour).
+- **The options model's volatility was the problem.** Kalshi's ladders implied about 28% annualized; DVOL and trailing realized volatility were about 36–37%. BTC then realized about 25% over the rest of the hour.
+- **Buying at the touch shows a steep favourite-longshot bias:** 1–5¢ contracts lost 53% before fees, while favourites earned about 1%. Most of it is the spread, which is what a market maker earns.
+
+Full write-up: [docs/study-a.md](docs/study-a.md).
 
 ## Recording
 
