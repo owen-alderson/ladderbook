@@ -25,6 +25,13 @@ def main(argv: list[str] | None = None) -> None:
     fair = commands.add_parser("fair", help="the next hour's ladder: Kalshi quotes vs options-implied fair value")
     fair.add_argument("--series", default="KXBTCD", choices=["KXBTCD", "KXETHD"])
 
+    study = commands.add_parser("study-a", help="calibration and longshot bias of settled ladders vs options (public data)")
+    study.add_argument("--series", default="KXBTCD")
+    study.add_argument("--start", required=True, help="first UTC day, YYYY-MM-DD")
+    study.add_argument("--end", required=True, help="UTC day to stop before, YYYY-MM-DD")
+    study.add_argument("--cache", type=Path, default=Path("data/cache"))
+    study.add_argument("--out", type=Path, default=Path("docs/study-a"))
+
     args = parser.parse_args(argv)
     if args.command == "record":
         from ladderbook.record.recorder import record
@@ -44,6 +51,11 @@ def main(argv: list[str] | None = None) -> None:
         from ladderbook.fair.live import main as fair_main
 
         fair_main(args.series)
+    elif args.command == "study-a":
+        from ladderbook.research.study_a import main as study_main
+
+        command = f"ladderbook study-a --series {args.series} --start {args.start} --end {args.end}"
+        study_main(args.series, args.start, args.end, args.cache, args.out, command)
     else:
         parser.print_help()
 
